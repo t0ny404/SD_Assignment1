@@ -1,8 +1,8 @@
 package controller;
 
-import service.InvalidPasswordException;
-import service.InvalidUserException;
-import service.InvalidUsernameException;
+import service.Utils.InvalidPasswordException;
+import service.Utils.InvalidUserException;
+import service.Utils.InvalidUsernameException;
 import service.UserService;
 
 import java.util.Arrays;

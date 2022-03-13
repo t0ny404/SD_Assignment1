@@ -1,4 +1,4 @@
-package service;
+package service.Utils;
 
 import java.sql.Date;
 
@@ -35,8 +35,8 @@ public class Validator {
             throw new InvalidDestinationException();
     }
 
-    public void validatePackage(Integer destId, String name, String price, String limit, String details) throws InvalidDestinationException {
-        if (destId == null || name == null || price == null || limit == null)
+    public void validatePackage(String name, String price, String limit, String details) throws InvalidDestinationException {
+        if (name == null || price == null || limit == null)
             throw new InvalidDestinationException();
 
         try {
@@ -48,31 +48,34 @@ public class Validator {
     }
 
     public Date validateDate(String date) throws InvalidDestinationException {
+        InvalidDestinationException e = new InvalidDestinationException("Invalid date!");
         if (date == null || date.length() < 8)
-            throw new InvalidDestinationException();
+            throw e;
 
-        int day, month, year, dtm, mty;
+        int day, month, year, ytm, mtd;
 
-        if (date.charAt(1) == '/') {
-            dtm = 1;
-        } else if (date.charAt(2) == '/') {
-            dtm = 2;
-        } else throw new InvalidDestinationException();
+        if (date.charAt(4) == '-') {
+            ytm = 4;
+        } else throw e;
 
-        if (date.charAt(dtm+2) == '/') {
-            mty = dtm + 2;
-        } else if (date.charAt(dtm+3) == '/') {
-            mty = dtm + 3;
-        } else throw new InvalidDestinationException();
+        if (date.charAt(ytm+2) == '-') {
+            mtd = ytm + 2;
+        } else if (date.charAt(ytm+3) == '-') {
+            mtd = ytm + 3;
+        } else throw e;
 
         try {
-            day = Integer.parseInt(date.substring(0, dtm));
-            month = Integer.parseInt(date.substring(dtm + 1, mty));
-            year = Integer.parseInt(date.substring(mty + 1));
-        } catch (NumberFormatException e) {
-            throw new InvalidDestinationException();
+            day = Integer.parseInt(date.substring(mtd));
+            month = Integer.parseInt(date.substring(ytm + 1, mtd));
+            year = Integer.parseInt(date.substring(0, ytm));
+        } catch (NumberFormatException ex) {
+            throw e;
         }
 
-        return new Date(year, month, day);
+        Date d = new Date(year-1900, month-1, day);
+         if (d.before(new Date(new java.util.Date().getTime())))
+             throw e;
+
+         return d;
     }
 }

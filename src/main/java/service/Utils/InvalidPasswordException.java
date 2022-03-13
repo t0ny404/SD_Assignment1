@@ -1,4 +1,4 @@
-package service;
+package service.Utils;
 
 public class InvalidPasswordException extends Exception {
 

@@ -1,6 +1,6 @@
 package controller;
 
-import service.InvalidDestinationException;
+import service.Utils.InvalidDestinationException;
 import service.PackageService;
 
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +18,10 @@ public class PackageController {
         return new DefaultTableModel(packageService.getDestPackages(id), packageService.getColumnsAgency());
     }
 
+    public TableModel getAllTable() {
+        return new DefaultTableModel(packageService.getAllPackages(), packageService.getColumnsAgency());
+    }
+
     public String add(Integer destId, String name, String price, String limit,
                       String details, String start, String end) {
 
@@ -33,10 +37,10 @@ public class PackageController {
         packageService.delete(id);
     }
 
-    public String edit(Integer id, Integer destId, String name, String price, String limit,
+    public String edit(Integer id, String name, String price, String limit,
                      String details, String start, String end) {
         try {
-        packageService.edit(id, destId, name, price, limit, details, start, end);
+        packageService.edit(id, name, price, limit, details, start, end);
         } catch (InvalidDestinationException e) {
             return e.getMessage();
         }

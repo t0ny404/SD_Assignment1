@@ -2,7 +2,10 @@ package service;
 
 import model.Package;
 import repository.PackageRepository;
+import service.Utils.InvalidDestinationException;
+import service.Utils.Validator;
 
+import javax.persistence.RollbackException;
 import java.sql.Date;
 
 public class PackageService {
@@ -11,7 +14,7 @@ public class PackageService {
     private final Validator validator = new Validator();
 
     public Object[][] getAllPackages() {
-        return packageRepository.findAll().stream().map(Package::getPackage).toArray(Object[][]::new);
+        return packageRepository.findAll().stream().map(Package::getPackageAgency).toArray(Object[][]::new);
     }
 
     public Object[][] getDestPackages(Integer id) {
@@ -32,25 +35,26 @@ public class PackageService {
     }
 
     public void insert(Integer destId, String name, String price, String limit, String details, String start, String end) throws InvalidDestinationException {
-        validator.validatePackage(destId, name, price, limit, details);
+        validator.validatePackage(name, price, limit, details);
         Date startD = validator.validateDate(start);
         Date endD = validator.validateDate(end);
+        if (startD.after(endD))
+            throw new InvalidDestinationException("Start date can't be after end date!");
 
-        packageRepository.insert(new Package(name, Double.parseDouble(price), Integer.parseInt(limit), details,
+        try {
+            packageRepository.insert(new Package(name, Double.parseDouble(price), Integer.parseInt(limit), details,
                 startD, endD), destId);
+        } catch (RollbackException e) {
+            throw new InvalidDestinationException("Package already exists!");
+        }
+
     }
 
     public void delete(Integer id) {
         packageRepository.delete(id);
     }
 
-    public void edit(Integer id, Integer destId, String name, String price, String limit, String details, String start, String end) throws InvalidDestinationException {
-        validator.validatePackage(destId, name, price, limit, details);
-        Date startD = validator.validateDate(start);
-        Date endD = validator.validateDate(end);
-
-        packageRepository.delete(id);
-        packageRepository.insert(new Package(name, Double.parseDouble(price), Integer.parseInt(limit), details,
-                startD, endD), destId);
+    public void edit(Integer id, String name, String price, String limit, String details, String start, String end) throws InvalidDestinationException {
+        insert(packageRepository.delete(id), name, price, limit, details, start, end);
     }
 }

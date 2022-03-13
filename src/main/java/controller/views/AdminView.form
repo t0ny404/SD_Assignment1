@@ -18,6 +18,7 @@
         <properties>
           <background color="-7044828"/>
           <enabled value="true"/>
+          <foreground color="-1"/>
           <text value="Log Out"/>
         </properties>
       </component>
@@ -41,7 +42,7 @@
         <properties>
           <background color="-16186437"/>
           <foreground color="-1"/>
-          <text value="Add"/>
+          <text value="Add destination"/>
         </properties>
       </component>
       <component id="11cc" class="javax.swing.JButton" binding="showPackagesButton" default-binding="true">
@@ -50,6 +51,7 @@
         </constraints>
         <properties>
           <background color="-12159487"/>
+          <foreground color="-1"/>
           <text value="Show packages"/>
         </properties>
       </component>
@@ -59,7 +61,8 @@
         </constraints>
         <properties>
           <background color="-4979453"/>
-          <text value="Delete"/>
+          <foreground color="-1"/>
+          <text value="Delete destination"/>
         </properties>
       </component>
       <scrollpane id="ea9c1">
@@ -91,6 +94,7 @@
         </constraints>
         <properties>
           <background color="-12159487"/>
+          <foreground color="-1"/>
           <text value="Edit package"/>
         </properties>
       </component>
@@ -100,7 +104,18 @@
         </constraints>
         <properties>
           <background color="-4979453"/>
+          <foreground color="-1"/>
           <text value="Delete package"/>
+        </properties>
+      </component>
+      <component id="fbf38" class="javax.swing.JButton" binding="showAllButton" default-binding="true">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-12159487"/>
+          <foreground color="-1"/>
+          <text value="Show all"/>
         </properties>
       </component>
     </children>

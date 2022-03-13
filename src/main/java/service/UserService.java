@@ -2,7 +2,12 @@ package service;
 
 import model.User;
 import repository.UserRepository;
+import service.Utils.InvalidPasswordException;
+import service.Utils.InvalidUserException;
+import service.Utils.InvalidUsernameException;
+import service.Utils.Validator;
 
+import javax.persistence.RollbackException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +19,11 @@ public class UserService {
 
     public void insert(String username, String password, String firstname, String lastname, String email, String age) throws InvalidUserException, InvalidUsernameException, InvalidPasswordException {
         validator.validateUser(username, password, firstname, lastname, email, age);
-        userRepository.insert(new User(username, password, firstname, lastname, email, Integer.parseInt(age)));
+        try {
+            userRepository.insert(new User(username, password, firstname, lastname, email, Integer.parseInt(age)));
+        } catch(RollbackException e) {
+            throw new InvalidUserException("Username already exists!");
+        }
     }
 
     public String login(String username, String password) throws InvalidUserException {

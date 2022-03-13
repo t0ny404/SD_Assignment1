@@ -1,7 +1,7 @@
 package controller;
 
 import service.DestinationService;
-import service.InvalidDestinationException;
+import service.Utils.InvalidDestinationException;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;

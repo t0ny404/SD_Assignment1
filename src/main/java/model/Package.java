@@ -8,34 +8,38 @@ import java.sql.Date;
 public class Package {
 
     @Id
-    @Column(unique = true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false)
     @GeneratedValue()
     private Integer id;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "price", nullable = false)
     private Double price;
 
-    @Column
+    @Column(name = "start")
     private Date start;
 
-    @Column
+    @Column(name = "details")
     private String details;
 
     @OneToOne
     @JoinColumn(name = "destination")
     private Destination destination;
 
-    @Column
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status status;
 
-    @Column(nullable = false)
+    @Column(name = "limitt", nullable = false)
     private Integer limitt;
 
-    @Column
+    @Column(name = "end")
     private Date end;
+
+    @Column(name = "bookedBy")
+    private Integer bookedBy;
 
     public Package(String name, Double price, Integer limit, String details, Date start, Date end) {
         this.name = name;
@@ -44,10 +48,25 @@ public class Package {
         this.end = end;
         this.details = details;
         this.limitt = limit;
+        this.bookedBy = 0;
+        this.status = Status.NOT_BOOKED;
     }
 
     public Package() {
 
+    }
+
+    public Package(Integer id, String name, Double price, Date start, String details, Destination destination, String status, Integer limitt, Date end, Integer bookedBy) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.start = start;
+        this.details = details;
+        this.destination = destination;
+        this.status = Status.valueOf(status);
+        this.limitt = limitt;
+        this.end = end;
+        this.bookedBy = bookedBy;
     }
 
     public Object[] getPackage() {
@@ -122,11 +141,19 @@ public class Package {
         this.limitt = limit;
     }
 
-    public Status getStatus() {
-        return status;
+    public String getStatus() {
+        return status.name();
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatus(String status) {
+        this.status = Status.valueOf(status);
+    }
+
+    public void update() {
+        if (bookedBy == 0)
+            status = Status.NOT_BOOKED;
+        else if (bookedBy.equals(limitt))
+            status = Status.BOOKED;
+        else status = Status.IN_PROGRESS;
     }
 }
