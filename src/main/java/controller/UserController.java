@@ -1,30 +1,38 @@
 package controller;
 
-import model.User;
+import service.InvalidPasswordException;
 import service.InvalidUserException;
 import service.InvalidUsernameException;
 import service.UserService;
+
+import java.util.Arrays;
 
 public class UserController {
 
     private final UserService userService = new UserService();
 
-    public void insert(User user) {
+    public String register(String username, char[] password, String firstname, String lastname, String email, String age) {
         try {
-            userService.insert(user);
-        } catch (InvalidUsernameException | InvalidUserException e) {
-            e.printStackTrace();
+            userService.insert(username, Arrays.toString(password)
+                    .replace(", ", "").substring(1).replace("]", ""), firstname, lastname, email, age);
+        } catch (InvalidPasswordException | InvalidUsernameException | InvalidUserException e) {
+            return e.getMessage();
+        } catch (Exception e) {
+            return "User already exists!";
         }
-        System.out.println("user successfully inserted!");
+        return "Success!";
     }
 
-    public void getByUsername(String username) {
-        User user = new User();
+    public String login(String username, char[] password) {
         try {
-            user = userService.getByUsername(username);
+            String user = userService.login(username, Arrays.toString(password)
+                    .replace(", ", "").substring(1).replace("]", ""));
+            if (user.equals("admin"))
+                return user;
 
-        } catch (InvalidUsernameException e) {
-            e.printStackTrace();
+            return "Hello " + user + "!";
+        } catch (InvalidUserException e) {
+            return e.getMessage();
         }
     }
 }

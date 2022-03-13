@@ -1,31 +1,50 @@
 package model;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
 public class User {
 
+
     @Id
+    @Column(unique = true, nullable = false)
+    @GeneratedValue()
     private Integer id;
 
     @Column(unique = true, nullable = false)
     private String username;
 
     @Column
+    private String firstname;
+
+    @Column
+    private String lastname;
+
+    @Column
+    private String email;
+
+    @Column
+    private Integer age;
+
+    @Column
     private String password;
 
     @Column
-    private String created;
-
-    @Column
-    private Boolean type;
+    private Boolean customer;
 
     public  User() {}
+
+    public User(String username, String password, String firstname, String lastname, String email, Integer age) {
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.age = age;
+        this.password = password;
+        this.email = email;
+        this.customer = true;
+    }
 
     public Integer getId() {
         return id;
@@ -51,19 +70,35 @@ public class User {
         this.password = password;
     }
 
-    public String getCreated() {
-        return created;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setCreated(String created) {
-        this.created = created;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public Boolean getType() {
-        return type;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setType(Boolean type) {
-        this.type = type;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Boolean isCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Boolean customer) {
+        this.customer = customer;
     }
 }

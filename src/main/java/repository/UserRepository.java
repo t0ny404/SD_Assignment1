@@ -4,6 +4,7 @@ import model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class UserRepository {
 
@@ -13,14 +14,13 @@ public class UserRepository {
         entityManager.getTransaction().begin();
         entityManager.persist(user);
         entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
-    public User findByUsername(String userName) {
+    public List findByUsername(String userName) {
         entityManager.getTransaction().begin();
-        User user = (User) entityManager.createQuery("SELECT * FROM user WHERE username=" + userName).getResultList().get(0);
+        List users = entityManager.createQuery("SELECT u FROM User u WHERE u.username LIKE :username")
+                .setParameter("username", userName).getResultList();
         entityManager.getTransaction().commit();
-        entityManager.close();
-        return user;
+        return users;
     }
 }
