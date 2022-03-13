@@ -24,7 +24,7 @@ public class Package {
     @Column(name = "details")
     private String details;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "destination")
     private Destination destination;
 
@@ -56,17 +56,14 @@ public class Package {
 
     }
 
-    public Package(Integer id, String name, Double price, Date start, String details, Destination destination, String status, Integer limitt, Date end, Integer bookedBy) {
+    public Package(Integer id, String name, Double price, Date start, Date end, String details, Integer limitt) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.start = start;
         this.details = details;
-        this.destination = destination;
-        this.status = Status.valueOf(status);
         this.limitt = limitt;
         this.end = end;
-        this.bookedBy = bookedBy;
     }
 
     public Object[] getPackage() {

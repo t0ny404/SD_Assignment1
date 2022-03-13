@@ -22,6 +22,8 @@ public class AdminView extends View {
     private final PackageController packageController = new PackageController();
     private final DestinationController destinationController = new DestinationController();
 
+    private Boolean showAll = true;
+
     public AdminView(View prev) {
         frame = new JFrame("Admin");
         frame.setContentPane(panel);
@@ -35,15 +37,17 @@ public class AdminView extends View {
         addDestinationListeners();
         addPackageListeners();
         updateDestinations();
-        updatePackages();
     }
 
     private void updateDestinations() {
         destinations.setModel(destinationController.getTable());
     }
 
-    private void updatePackages() {
-        packages.setModel(packageController.getAgencyTable((Integer) destinations.getValueAt(destinations.getSelectedRow(), 0)));
+    private void updatePackages(Boolean all) {
+        if (all) {
+            packages.setModel(packageController.getAllTable());
+        } else
+            packages.setModel(packageController.getAgencyTable((Integer) destinations.getValueAt(destinations.getSelectedRow(), 0)));
     }
 
     private void addDestinationListeners() {
@@ -92,7 +96,8 @@ public class AdminView extends View {
 
         showPackagesButton.addActionListener(e -> {
             try {
-                updatePackages();
+                showAll = false;
+                updatePackages(showAll);
             } catch(ArrayIndexOutOfBoundsException ignored) {
                 JOptionPane.showMessageDialog(null, "Please select a destination!");
             }
@@ -128,7 +133,8 @@ public class AdminView extends View {
                     }
                     else break;
                 }
-                updatePackages();
+                showAll = false;
+                updatePackages(showAll);
             } catch(ArrayIndexOutOfBoundsException ignored) {
                 JOptionPane.showMessageDialog(null, "Please select a destination!");
             }
@@ -142,7 +148,7 @@ public class AdminView extends View {
                 for (int i : rows) {
                     packageController.delete((Integer) packages.getValueAt(i, 0));
                 }
-                updatePackages();
+                updatePackages(showAll);
             }
         });
 
@@ -180,13 +186,13 @@ public class AdminView extends View {
                     }
                     else break;
                 }
-                packages.setModel(packageController.getAllTable());
+                updatePackages(showAll);
             } catch(ArrayIndexOutOfBoundsException ignored) {
                 JOptionPane.showMessageDialog(null, "Please select a package!");
             }
         });
 
-        showAllButton.addActionListener(e -> packages.setModel(packageController.getAllTable()));
+        showAllButton.addActionListener(e -> { showAll = true; updatePackages(showAll);});
     }
 
     private void addToPopUp(JPanel panel, JTextField name, JTextField price, JTextField limit, JTextField details, JTextField start, JTextField end) {

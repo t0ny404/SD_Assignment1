@@ -5,6 +5,7 @@ import repository.PackageRepository;
 import service.Utils.InvalidDestinationException;
 import service.Utils.Validator;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import java.sql.Date;
 
@@ -55,6 +56,16 @@ public class PackageService {
     }
 
     public void edit(Integer id, String name, String price, String limit, String details, String start, String end) throws InvalidDestinationException {
-        insert(packageRepository.delete(id), name, price, limit, details, start, end);
+        validator.validatePackage(name, price, limit, details);
+        Date startD = validator.validateDate(start);
+        Date endD = validator.validateDate(end);
+        if (startD.after(endD))
+            throw new InvalidDestinationException("Start date can't be after end date!");
+
+        try {
+            packageRepository.edit(new Package(id, name, Double.parseDouble(price), startD, endD, details, Integer.parseInt(limit)));
+        } catch (PersistenceException e) {
+            throw new InvalidDestinationException("Package already exists!");
+        }
     }
 }

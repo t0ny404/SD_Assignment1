@@ -52,27 +52,8 @@ public class Validator {
         if (date == null || date.length() < 8)
             throw e;
 
-        int day, month, year, ytm, mtd;
+        Date d = Date.valueOf(date);
 
-        if (date.charAt(4) == '-') {
-            ytm = 4;
-        } else throw e;
-
-        if (date.charAt(ytm+2) == '-') {
-            mtd = ytm + 2;
-        } else if (date.charAt(ytm+3) == '-') {
-            mtd = ytm + 3;
-        } else throw e;
-
-        try {
-            day = Integer.parseInt(date.substring(mtd));
-            month = Integer.parseInt(date.substring(ytm + 1, mtd));
-            year = Integer.parseInt(date.substring(0, ytm));
-        } catch (NumberFormatException ex) {
-            throw e;
-        }
-
-        Date d = new Date(year-1900, month-1, day);
          if (d.before(new Date(new java.util.Date().getTime())))
              throw e;
 

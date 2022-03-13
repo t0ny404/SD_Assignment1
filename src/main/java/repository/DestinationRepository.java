@@ -22,7 +22,8 @@ public class DestinationRepository {
     public void delete(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.remove(findById(id));
+        Destination d = findById(id);
+        entityManager.remove(entityManager.contains(d) ? d : entityManager.merge(d));
         entityManager.getTransaction().commit();
         entityManager.close();
     }

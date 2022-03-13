@@ -23,7 +23,8 @@ public class PackageRepository {
     public List<Package> findAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        List<Package> ps = (List<Package>) entityManager.createQuery("SELECT p FROM Package p").getResultList();
+        List<Package> ps = (List<Package>) entityManager.createQuery("SELECT p FROM Package p " +
+                " ORDER BY p.status").getResultList();
         entityManager.getTransaction().commit();
         entityManager.close();
         return ps;
@@ -64,5 +65,19 @@ public class PackageRepository {
         entityManager.getTransaction().commit();
         entityManager.close();
         return pack;
+    }
+
+    public void edit(Package pack) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createQuery("UPDATE Package p " +
+                "SET p.name=:name, p.price=:price, p.limitt=:limitt, p.details=:details, p.start=:start, p.end=:end " +
+                "WHERE p.id=:id")
+                .setParameter("name", pack.getName()).setParameter("price", pack.getPrice())
+                .setParameter("limitt", pack.getLimitt()).setParameter("details", pack.getDetails())
+                .setParameter("start", pack.getStart()).setParameter("end", pack.getEnd())
+                .setParameter("id", pack.getId()).executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 }
