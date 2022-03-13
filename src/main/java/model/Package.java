@@ -2,6 +2,12 @@ package model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "package")
@@ -41,6 +47,10 @@ public class Package {
     @Column(name = "bookedBy")
     private Integer bookedBy;
 
+    @ManyToMany(mappedBy = "packages", fetch = FetchType.EAGER)
+    private List<User> users = new ArrayList<>();
+
+
     public Package(String name, Double price, Integer limit, String details, Date start, Date end) {
         this.name = name;
         this.price = price;
@@ -67,7 +77,7 @@ public class Package {
     }
 
     public Object[] getPackage() {
-        return new Object[]{name, price, start, end, details, destination.getHotel(), destination.getCity(), destination.getCountry(), status};
+        return new Object[]{name, price, start, end, details, destination.getHotel(), destination.getCity(), destination.getCountry()};
     }
 
     public Object[] getPackageAgency() {
@@ -152,5 +162,15 @@ public class Package {
         else if (bookedBy.equals(limitt))
             status = Status.BOOKED;
         else status = Status.IN_PROGRESS;
+    }
+
+    public long getPeriod() {
+        return ChronoUnit.DAYS.between(LocalDate.parse(start.toString()),LocalDate.parse(end.toString()));
+    }
+
+    public void addUser(User user) {
+        users.add(user);
+        bookedBy++;
+        update();
     }
 }

@@ -1,18 +1,54 @@
 package service;
 
 import model.Package;
+import model.User;
+import repository.DestinationRepository;
 import repository.PackageRepository;
 import service.Utils.InvalidDestinationException;
+import service.Utils.InvalidFilterException;
 import service.Utils.Validator;
 
 import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PackageService {
 
     private final PackageRepository packageRepository = new PackageRepository();
     private final Validator validator = new Validator();
+
+    public Object[][] filterPackages(String by, String val) throws InvalidFilterException {
+        switch (by) {
+            case "Destination" -> {
+                List<Package> packages = new ArrayList<>();
+                for (Integer dest : new DestinationRepository().findByLoc(val)) {
+                    packages.addAll(packageRepository.findByDest(dest));
+                }
+                return packages.stream().map(Package::getPackage).toArray(Object[][]::new);
+            }
+            case "Price" -> {
+                double price;
+                try {
+                    price = Double.parseDouble(val);
+                } catch (NumberFormatException e) {
+                    throw new InvalidFilterException();
+                }
+                return packageRepository.findByPrice(price).stream().map(Package::getPackage).toArray(Object[][]::new);
+            }
+            case "Period" -> {
+                int period;
+                try {
+                    period = Integer.parseInt(val);
+                } catch (NumberFormatException e) {
+                    throw new InvalidFilterException();
+                }
+                return packageRepository.findAvailable().stream().filter(p -> p.getPeriod() <= period).map(Package::getPackage).toArray(Object[][]::new);
+            }
+        }
+        return null;
+    }
 
     public Object[][] getAllPackages() {
         return packageRepository.findAll().stream().map(Package::getPackageAgency).toArray(Object[][]::new);
@@ -28,7 +64,7 @@ public class PackageService {
 
     public String[] getColumns() {
         return new String[]{"Name", "price", "Start date", "End date", "Details",
-                "Hotel", "City", "Country", "Status"};
+                "Hotel", "City", "Country"};
     }
 
     public String[] getColumnsAgency() {

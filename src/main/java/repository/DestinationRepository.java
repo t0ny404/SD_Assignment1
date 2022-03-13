@@ -45,4 +45,13 @@ public class DestinationRepository {
         entityManager.close();
         return dest;
     }
+
+    public List<Integer> findByLoc(String loc) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        List<Integer> dest = (List<Integer>) entityManager.createQuery("SELECT d.id FROM Destination d WHERE d.city LIKE :loc OR d.country LIKE :loc").setParameter("loc", loc + "%").getResultList();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        return dest;
+    }
 }

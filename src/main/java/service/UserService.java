@@ -1,6 +1,7 @@
 package service;
 
 import model.User;
+import model.Package;
 import repository.UserRepository;
 import service.Utils.InvalidPasswordException;
 import service.Utils.InvalidUserException;
@@ -8,14 +9,13 @@ import service.Utils.InvalidUsernameException;
 import service.Utils.Validator;
 
 import javax.persistence.RollbackException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserService {
 
     private final Validator validator = new Validator();
     private final UserRepository userRepository = new UserRepository();
-    private final List<User> activeUsers = new ArrayList<>();
+    private User activeUser;
 
     public void insert(String username, String password, String firstname, String lastname, String email, String age) throws InvalidUserException, InvalidUsernameException, InvalidPasswordException {
         validator.validateUser(username, password, firstname, lastname, email, age);
@@ -37,7 +37,17 @@ public class UserService {
         if (!user.isCustomer())
             return "admin";
 
-        activeUsers.add(user);
+        activeUser = user;
         return user.getFirstname();
+    }
+
+    public User book(Package pack) {
+        activeUser.addPackage(pack);
+        userRepository.update(activeUser);
+        return activeUser;
+    }
+
+    public Object[][] myBookings() {
+        return activeUser.getPackages().stream().map(Package::getPackage).toArray(Object[][]::new);
     }
 }

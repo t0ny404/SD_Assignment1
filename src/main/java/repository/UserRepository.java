@@ -19,6 +19,14 @@ public class UserRepository {
         entityManager.close();
     }
 
+    public void update(User user) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.merge(user);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
     public List findByUsername(String userName) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();

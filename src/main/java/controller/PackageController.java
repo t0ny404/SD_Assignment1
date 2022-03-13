@@ -2,6 +2,7 @@ package controller;
 
 import service.Utils.InvalidDestinationException;
 import service.PackageService;
+import service.Utils.InvalidFilterException;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -45,5 +46,15 @@ public class PackageController {
             return e.getMessage();
         }
         return "Success!";
+    }
+
+    public TableModel filter(String by, String val) {
+        if (by == null || val == null || val.equals(""))
+            return getCustomerTable();
+        try {
+            return new DefaultTableModel(packageService.filterPackages(by, val), packageService.getColumns());
+        } catch (InvalidFilterException e) {
+            return new DefaultTableModel(new Object[][]{{e.getMessage()}}, new String[]{"error"});
+        }
     }
 }

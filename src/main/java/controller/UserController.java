@@ -1,10 +1,14 @@
 package controller;
 
+import service.BookingService;
+import service.PackageService;
 import service.Utils.InvalidPasswordException;
 import service.Utils.InvalidUserException;
 import service.Utils.InvalidUsernameException;
 import service.UserService;
 
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.util.Arrays;
 
 public class UserController {
@@ -34,5 +38,13 @@ public class UserController {
         } catch (InvalidUserException e) {
             return e.getMessage();
         }
+    }
+
+    public void book(String name) {
+        new BookingService().book(name, userService);
+    }
+
+    public DefaultTableModel myBookings() {
+        return new DefaultTableModel(userService.myBookings(), new PackageService().getColumns());
     }
 }

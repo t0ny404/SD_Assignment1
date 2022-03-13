@@ -25,7 +25,7 @@ public class MainView extends View {
             String message = controller.login(username.getText(), password.getPassword());
             if (message.startsWith("Hello")) {
                 frame.setVisible(false);
-                new CustomerView(this, message);
+                new CustomerView(this, message, controller);
             } else if (message.equals("admin")) {
                 frame.setVisible(false);
                 new AdminView(this);

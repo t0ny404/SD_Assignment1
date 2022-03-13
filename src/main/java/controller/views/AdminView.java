@@ -91,6 +91,8 @@ public class AdminView extends View {
                     destinationController.delete((Integer) destinations.getValueAt(i, 0));
                 }
                 updateDestinations();
+                showAll = false;
+                updatePackages(showAll);
             }
         });
 

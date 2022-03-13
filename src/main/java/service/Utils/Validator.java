@@ -40,8 +40,8 @@ public class Validator {
             throw new InvalidDestinationException();
 
         try {
-            Double.parseDouble(price);
-            Integer.parseInt(limit);
+            if (Double.parseDouble(price) < 0 || Integer.parseInt(limit) <= 0)
+                throw new InvalidDestinationException();
         } catch (NumberFormatException e) {
             throw new InvalidDestinationException();
         }
@@ -52,7 +52,12 @@ public class Validator {
         if (date == null || date.length() < 8)
             throw e;
 
-        Date d = Date.valueOf(date);
+        Date d;
+        try {
+            d = Date.valueOf(date);
+        } catch (IllegalArgumentException exception) {
+            throw e;
+        }
 
          if (d.before(new Date(new java.util.Date().getTime())))
              throw e;

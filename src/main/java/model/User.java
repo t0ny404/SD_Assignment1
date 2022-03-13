@@ -2,11 +2,14 @@ package model;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
 public class User {
-
 
     @Id
     @Column(unique = true, nullable = false)
@@ -33,6 +36,12 @@ public class User {
 
     @Column
     private Boolean customer;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "booking",
+    joinColumns = { @JoinColumn(name = "customer") },
+    inverseJoinColumns = { @JoinColumn(name = "package") })
+    List<Package> packages = new ArrayList<>();
 
     public  User() {}
 
@@ -101,4 +110,10 @@ public class User {
     public void setCustomer(Boolean customer) {
         this.customer = customer;
     }
+
+    public void addPackage(Package pack) {
+        packages.add(pack);
+    }
+
+    public List<Package> getPackages() {return packages;}
 }
