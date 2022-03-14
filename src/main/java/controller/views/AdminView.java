@@ -4,6 +4,7 @@ import controller.DestinationController;
 import controller.PackageController;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class AdminView extends View {
 
@@ -91,8 +92,8 @@ public class AdminView extends View {
                     destinationController.delete((Integer) destinations.getValueAt(i, 0));
                 }
                 updateDestinations();
-                showAll = false;
-                updatePackages(showAll);
+                showAll = true;
+                packages.setModel(new DefaultTableModel());
             }
         });
 
@@ -116,9 +117,9 @@ public class AdminView extends View {
                 JTextField limit = new JTextField(10);
                 JTextField details = new JTextField(10);
                 JTextField start = new JTextField(10);
-                start.setText("--");
+                start.setText("2022--");
                 JTextField end = new JTextField(10);
-                end.setText("--");
+                end.setText("2022--");
 
                 addToPopUp(panel, name, price, limit, details, start, end);
 
